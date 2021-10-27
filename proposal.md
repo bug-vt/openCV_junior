@@ -20,10 +20,10 @@ As a student in Computer Vision course however, our goal is to gain concrete ide
 ## Approach
 
 - We will first prototype the library using Python since it reduce the burden of creating helper functions such as vector/matrix multiplication, displaying image buffer, and array/list manipulation. 
+- During the prototyping step, we will also analyze what part of the algorithm is causing the performance bottleneck. This will provide better understanding of strengths and weaknesses of the given algorithm in computer vision and suggest when and where to use it for best performance.
 - Each function will be unit tested for correctness by comparing output with corresponding OpenCV library function.  
 - Transition to C++ will be consider once we identify all the algorithms are implemented correctly and after the unit testing step.
-- During the prototyping step, we will also analyze what part of the algorithm is causing the performance bottleneck. This will provide better understanding of strengths and weaknesses of the given algorithm in computer vision and suggest when and where to use it for best performance.
-
+  
 ---
 ## Experiments and results
 

@@ -120,13 +120,34 @@ aside > *:last-child {
 <h2 id="introduction">Introduction</h2>
 <p>Although computer vision is a relatively new topic, great amounts of time and effort have been put into by professionals and researchers in the last few decades. As a result, many sophisticated algorithms have been developed that most computer vision application are built upon today. Fortunately, those algorithms are packaged and encapsulated into commercial/open-source libraries, so that user can focus on its application.</p>
 <blockquote></blockquote>
-<p>As a student in Computer Vision course however, our goal is to gain concrete idea of some of the well-known topics in computer vision by creating our own library from scratch. Topics include Harris corner detector, SIFT descriptor, and nearest neighbor matching which lay foundation for many correspondence problem in computer vision. It is not our intention to create a library to compete with known library such as OpenCV, but to have stronger understanding of existing libraries and learn how to use correctly.</p>
+<p>As a student in Computer Vision course however, our goal is to gain concrete idea of some of the well-known topics in computer vision by creating our own library from scratch. Topics include Harris corner detector, SIFT descriptor, and nearest neighbor matching which lay foundation for many correspondence problem in computer vision. The focus of the project is not to create a library that can compete with known library such as OpenCV, but to gain deeper understanding of existing libraries and ability to implement ideas for a existing/future computer language that may not have support for computer vision and its application.</p>
 <hr>
 <h2 id="approach">Approach</h2>
-<p>To do</p>
+<ul>
+<li>We will first prototype the library using Python since it reduce the burden of creating helper functions such as vector/matrix multiplication, displaying image buffer, and array/list manipulation.</li>
+<li>During the prototyping step, we will also analyze what part of the algorithm is causing the performance bottleneck. This will provide better understanding of strengths and weaknesses of the given algorithm in computer vision and suggest when and where to use it for best performance.</li>
+<li>Each function will be unit tested for correctness by comparing output with corresponding OpenCV library function.</li>
+<li>Transition to C++ will be consider once we identify all the algorithms are implemented correctly and after the unit testing step.</li>
+</ul>
 <hr>
 <h2 id="experiments-and-results">Experiments and results</h2>
-<p>To do</p>
+<p>Following image data will be used during the prototyping step.</p>
+<p><img src="file:///c:\Users\thefr\OneDrive_VT\2021_fall\ece4554\openCV_junior\testImg.png" alt="Test img"></p>
+<h4 id="figure-1-place-holder-image-need-change">Figure 1. Place holder image. Need change.</h4>
+<ol>
+<li>Harris corner detector</li>
+</ol>
+<p>Success if
+distance between (x, y) coordinate of points from our implementation and points from openCV &lt; epsilon</p>
+<ol start="2">
+<li>SIFT descriptor</li>
+</ol>
+<p>Success if
+distance between each vector for each descriptor and descriptor from openCV &lt; epsilon</p>
+<ol start="3">
+<li>Nearest neighbor matching</li>
+</ol>
+<p>Success if matching rate is within 10% of openCV matching rate.</p>
 <hr>
 <h2 id="qualitative-results">Qualitative results</h2>
 <hr>
