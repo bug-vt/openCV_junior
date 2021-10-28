@@ -45,11 +45,26 @@ Following pseudo code describe the algorithm of Harris corner detector.
  \lambda_{min} \approx \frac{determinant(M)}{trace(M)}
  $$
 
- ### **Result**
+ ### **Experiments and Result**
+First, basic test will be perform using following image (Figure 1).
+Then, more advance test will be perform by comparing the result with Harris detector from OpenCV (Figure 2).
 
 ![Basic test](images/harris_expected_result1.png)
 
-#### Figure 1. (a)Input image, (b)Expected output. Red circles indicate feature points.
+#### Figure 1. (a)Input image, (b)Expected output. Red circles indicate feature points.  
+
+` `
+
+![Advance test](images/harris_expected_result2.png)
+#### Figure 2. Output using existing library such as OpenCV. Image was copied from the *Computer vision: models, learning and inference* by Simon Prince [1]. 
+
+` `
+
+Using the same same threshold value, tests will consider success if
+1. Difference in number of feature points between our implementation and existing library function is within 10%.  
+2. Positions of resulting local maxima(s) match with the output from the existing library function.
+3. Performance difference is within the range of few magnitude. This is only use as a rough guideline to check whether we are not introducing unnecessary computation or performance bottleneck in our implementation.
+
 
 ---
 ## SIFT descriptor
@@ -62,6 +77,28 @@ Following pseudo code was adapted from the *Computer vision: models, learning an
     Concatenate 16 histograms to make 128 X 1 vector
     Normalize the vector
 
+ ### **Experiments and Result**
+ Certain well-defined feature points will be manually selected for the purpose of this testing. This will lead to automatic and more sophisticated matching problem in the next section. Correctness of the descriptor will be evaluated through 3 separate tests. Tests will be consider success only if all following 3 tests pass. Note that all images below were copied from the *Computer Vision: Algorithms and Applications* by Richard Szeliski [2].
+ 1. Matching feature points where two images are differ by translation (Figure 3)
+ 2. Matching feature points where two images are differ by rotation (Figure 4)
+ 3. Matching feature points where two images are differ by different point of view (Figure 5)
+   
+![Translation test](images/sift_expected_result2.png)
+
+#### Figure 3. Two images differ by translation. Two red circles are expected to hold matching descriptor.
+
+![Translation test](images/sift_expected_result1.png)
+
+#### Figure 4. Two images differ by rotation. Two red circles are expected to hold matching descriptor.
+
+![Translation test](images/sift_expected_result3.png)
+
+#### Figure 5. Two images differ by point of view. Two red circles are expected to hold matching descriptor.
+
+Again, once the above 3 tests pass, result will be compare to the SIFT function from existing library. Following to tests should pass for pre-selected feature points:
+
+1. Computed vector matches with the output vector from exiting library. 
+2. Performance difference is within the range of few magnitude. This is only use as a rough guideline to check whether we are not introducing unnecessary computation or performance bottleneck in our implementation.
 
 ---
 ## Nearest neighbor matching
@@ -81,8 +118,8 @@ Following pseudo code was adapted from the *Computer vision: models, learning an
 
 ---
 ## References
-[1] Simon Prince, *Computer vision: models, learning and inference*, Cambridge University Press, 2012.
-
+[1] Simon Prince, *Computer vision: models, learning and inference*, Cambridge University Press, 2012.  
+[2] Richard Szeliski, *Computer Vision: Algorithms and Applications*, 2nd Edition, Springer, 2021.
 
 ---
 #### © Aziz Shaik and Bug Lee

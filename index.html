@@ -150,9 +150,21 @@ Choose the local maximum of those points as features
 <section><eqn><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><msub><mi>λ</mi><mrow><mi>m</mi><mi>i</mi><mi>n</mi></mrow></msub><mo>≈</mo><mfrac><mrow><mi>d</mi><mi>e</mi><mi>t</mi><mi>e</mi><mi>r</mi><mi>m</mi><mi>i</mi><mi>n</mi><mi>a</mi><mi>n</mi><mi>t</mi><mo stretchy="false">(</mo><mi>M</mi><mo stretchy="false">)</mo></mrow><mrow><mi>t</mi><mi>r</mi><mi>a</mi><mi>c</mi><mi>e</mi><mo stretchy="false">(</mo><mi>M</mi><mo stretchy="false">)</mo></mrow></mfrac></mrow><annotation encoding="application/x-tex">
  \lambda_{min} \approx \frac{determinant(M)}{trace(M)}
  </annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.84444em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">λ</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.31166399999999994em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">min</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">≈</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:2.363em;vertical-align:-0.936em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.427em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathnormal">t</span><span class="mord mathnormal" style="margin-right:0.02778em;">r</span><span class="mord mathnormal">a</span><span class="mord mathnormal">ce</span><span class="mopen">(</span><span class="mord mathnormal" style="margin-right:0.10903em;">M</span><span class="mclose">)</span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathnormal">d</span><span class="mord mathnormal">e</span><span class="mord mathnormal">t</span><span class="mord mathnormal" style="margin-right:0.02778em;">er</span><span class="mord mathnormal">minan</span><span class="mord mathnormal">t</span><span class="mopen">(</span><span class="mord mathnormal" style="margin-right:0.10903em;">M</span><span class="mclose">)</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.936em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span></span></span></span></span></eqn></section></math>
-<h3 id="result"><strong>Result</strong></h3>
-<p><img src="file:///c:\Users\thefr\OneDrive_VT\2021_fall\ece4554\openCV_junior\harris_expected_result1.png" alt="Basic test"></p>
+<h3 id="experiments-and-result"><strong>Experiments and Result</strong></h3>
+<p>First, basic test will be perform using following image (Figure 1).
+Then, more advance test will be perform by comparing the result with Harris detector from OpenCV (Figure 2).</p>
+<p><img src="images\harris_expected_result1.png" alt="Basic test"></p>
 <h4 id="figure-1-ainput-image-bexpected-output-red-circles-indicate-feature-points">Figure 1. (a)Input image, (b)Expected output. Red circles indicate feature points.</h4>
+<p><code> </code></p>
+<p><img src="images\harris_expected_result2.png" alt="Advance test"></p>
+<h4 id="figure-2-output-using-existing-library-such-as-opencv-image-was-copied-from-the-computer-vision-models-learning-and-inference-by-simon-prince-1">Figure 2. Output using existing library such as OpenCV. Image was copied from the <em>Computer vision: models, learning and inference</em> by Simon Prince [1].</h4>
+<p><code> </code></p>
+<p>Using the same same threshold value, tests will consider success if</p>
+<ol>
+<li>Difference in number of feature points between our implementation and existing library function is within 10%.</li>
+<li>Positions of resulting local maxima(s) match with the output from the existing library function.</li>
+<li>Performance difference is within the range of few magnitude. This is only use as a rough guideline to check whether we are not introducing unnecessary computation or performance bottleneck in our implementation.</li>
+</ol>
 <hr>
 <h2 id="sift-descriptor">SIFT descriptor</h2>
 <p>Following pseudo code was adapted from the <em>Computer vision: models, learning and inference</em> by Simon Prince [1].</p>
@@ -163,34 +175,34 @@ Weight the histogram by the associated gradient amplitude and by distance
 Concatenate 16 histograms to make 128 X 1 vector
 Normalize the vector
 </code></pre>
+<h3 id="experiments-and-result-1"><strong>Experiments and Result</strong></h3>
+<p>Certain well-defined feature points will be manually selected for the purpose of this testing. This will lead to automatic and more sophisticated matching problem in the next section. Correctness of the descriptor will be evaluated through 3 separate tests. Tests will be consider success only if all following 3 tests pass. Note that all images below were copied from the <em>Computer Vision: Algorithms and Applications</em> by Richard Szeliski [2].</p>
+<ol>
+<li>Matching feature points where two images are differ by translation (Figure 3)</li>
+<li>Matching feature points where two images are differ by rotation (Figure 4)</li>
+<li>Matching feature points where two images are differ by different point of view (Figure 5)</li>
+</ol>
+<p><img src="images\sift_expected_result2.png" alt="Translation test"></p>
+<h4 id="figure-3-two-images-differ-by-translation-two-red-circles-are-expected-to-hold-matching-descriptor">Figure 3. Two images differ by translation. Two red circles are expected to hold matching descriptor.</h4>
+<p><img src="images\sift_expected_result1.png" alt="Translation test"></p>
+<h4 id="figure-4-two-images-differ-by-rotation-two-red-circles-are-expected-to-hold-matching-descriptor">Figure 4. Two images differ by rotation. Two red circles are expected to hold matching descriptor.</h4>
+<p><img src="images\sift_expected_result3.png" alt="Translation test"></p>
+<h4 id="figure-5-two-images-differ-by-point-of-view-two-red-circles-are-expected-to-hold-matching-descriptor">Figure 5. Two images differ by point of view. Two red circles are expected to hold matching descriptor.</h4>
+<p>Again, once the above 3 tests pass, result will be compare to the SIFT function from existing library. Following to tests should pass for pre-selected feature points:</p>
+<ol>
+<li>Computed vector matches with the output vector from exiting library.</li>
+<li>Performance difference is within the range of few magnitude. This is only use as a rough guideline to check whether we are not introducing unnecessary computation or performance bottleneck in our implementation.</li>
+</ol>
 <hr>
 <h2 id="nearest-neighbor-matching">Nearest neighbor matching</h2>
-<hr>
-<h2 id="experiments-and-results">Experiments and results</h2>
-<p>Following image data will be used during the prototyping step.</p>
-<p><img src="file:///c:\Users\thefr\OneDrive_VT\2021_fall\ece4554\openCV_junior\testImg.png" alt="Test img"></p>
-<h4 id="figure-1-place-holder-image-need-change">Figure 1. Place holder image. Need change.</h4>
-<ol>
-<li>Harris corner detector</li>
-</ol>
-<p>Success if
-distance between (x, y) coordinate of points from our implementation and points from openCV &lt; epsilon</p>
-<ol start="2">
-<li>SIFT descriptor</li>
-</ol>
-<p>Success if
-distance between each vector for each descriptor and descriptor from openCV &lt; epsilon</p>
-<ol start="3">
-<li>Nearest neighbor matching</li>
-</ol>
-<p>Success if matching rate is within 10% of openCV matching rate.</p>
 <hr>
 <h2 id="qualitative-results">Qualitative results</h2>
 <hr>
 <h2 id="conclusion">Conclusion</h2>
 <hr>
 <h2 id="references">References</h2>
-<p>[1] Simon Prince, <em>Computer vision: models, learning and inference</em>, Cambridge University Press, 2012.</p>
+<p>[1] Simon Prince, <em>Computer vision: models, learning and inference</em>, Cambridge University Press, 2012.<br>
+[2] Richard Szeliski, <em>Computer Vision: Algorithms and Applications</em>, 2nd Edition, Springer, 2021.</p>
 <hr>
 <h4 id="-aziz-shaik-and-bug-lee">© Aziz Shaik and Bug Lee</h4>
 
