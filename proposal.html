@@ -91,7 +91,8 @@ aside > *:last-child {
 }
 
 </style>
-        
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.2/dist/katex.min.css" integrity="sha384-yFRtMMDnQtDRO8rLpMIKrtPCD5jdktao2TV19YiZYWMDkUR5GQZR/NOVTdquEx1j" crossorigin="anonymous">
+<link href="https://cdn.jsdelivr.net/npm/katex-copytex@latest/dist/katex-copytex.min.css" rel="stylesheet" type="text/css">
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/markdown.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/highlight.css">
 <style>
@@ -105,7 +106,7 @@ aside > *:last-child {
 .task-list-item { list-style-type: none; } .task-list-item-checkbox { margin-left: -20px; vertical-align: middle; }
 </style>
         
-        
+        <script src="https://cdn.jsdelivr.net/npm/katex-copytex@latest/dist/katex-copytex.min.js"></script>
         
     </head>
     <body class="vscode-body vscode-light">
@@ -119,16 +120,47 @@ aside > *:last-child {
 <hr>
 <h2 id="introduction">Introduction</h2>
 <p>Although computer vision is a relatively new topic, great amounts of time and effort have been put into by professionals and researchers in the last few decades. As a result, many sophisticated algorithms have been developed that most computer vision application are built upon today. Fortunately, those algorithms are packaged and encapsulated into commercial/open-source libraries, so that user can focus on its application.</p>
-<blockquote></blockquote>
 <p>As a student in Computer Vision course however, our goal is to gain concrete idea of some of the well-known topics in computer vision by creating our own library from scratch. Topics include Harris corner detector, SIFT descriptor, and nearest neighbor matching which lay foundation for many correspondence problem in computer vision. The focus of the project is not to create a library that can compete with known library such as OpenCV, but to gain deeper understanding of existing libraries and ability to implement ideas for a existing/future computer language that may not have support for computer vision and its application.</p>
 <hr>
 <h2 id="approach">Approach</h2>
 <ul>
-<li>We will first prototype the library using Python since it reduce the burden of creating helper functions such as vector/matrix multiplication, displaying image buffer, and array/list manipulation.</li>
+<li>We will first prototype the library using Python since it reduce the burden of creating helper functions such as vector/matrix multiplication, displaying image buffer, and array/list manipulation. Two libraries that will be used are:
+<ul>
+<li>NumPy</li>
+<li>Python Imaging Library (PIL)</li>
+</ul>
+</li>
 <li>During the prototyping step, we will also analyze what part of the algorithm is causing the performance bottleneck. This will provide better understanding of strengths and weaknesses of the given algorithm in computer vision and suggest when and where to use it for best performance.</li>
 <li>Each function will be unit tested for correctness by comparing output with corresponding OpenCV library function.</li>
 <li>Transition to C++ will be consider once we identify all the algorithms are implemented correctly and after the unit testing step.</li>
 </ul>
+<hr>
+<h2 id="harris-corner-detector">Harris corner detector</h2>
+<p>Following pseudo code describe the algorithm of Harris corner detector.</p>
+<pre><code>Convert the given image to gray scale. 
+Compute the gradient components at each point in the image
+Create the M matrix from the gradient components
+Compute the eigenvalues of M
+Compute Harris response. 
+Find points with large response (above certain threshold)
+Choose the local maximum of those points as features
+</code></pre>
+<p>Note that Harris response will be approximated to</p>
+<section><eqn><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><msub><mi>λ</mi><mrow><mi>m</mi><mi>i</mi><mi>n</mi></mrow></msub><mo>≈</mo><mfrac><mrow><mi>d</mi><mi>e</mi><mi>t</mi><mi>e</mi><mi>r</mi><mi>m</mi><mi>i</mi><mi>n</mi><mi>a</mi><mi>n</mi><mi>t</mi><mo stretchy="false">(</mo><mi>M</mi><mo stretchy="false">)</mo></mrow><mrow><mi>t</mi><mi>r</mi><mi>a</mi><mi>c</mi><mi>e</mi><mo stretchy="false">(</mo><mi>M</mi><mo stretchy="false">)</mo></mrow></mfrac></mrow><annotation encoding="application/x-tex">
+ \lambda_{min} \approx \frac{determinant(M)}{trace(M)}
+ </annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.84444em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">λ</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.31166399999999994em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">min</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">≈</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:2.363em;vertical-align:-0.936em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.427em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathnormal">t</span><span class="mord mathnormal" style="margin-right:0.02778em;">r</span><span class="mord mathnormal">a</span><span class="mord mathnormal">ce</span><span class="mopen">(</span><span class="mord mathnormal" style="margin-right:0.10903em;">M</span><span class="mclose">)</span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathnormal">d</span><span class="mord mathnormal">e</span><span class="mord mathnormal">t</span><span class="mord mathnormal" style="margin-right:0.02778em;">er</span><span class="mord mathnormal">minan</span><span class="mord mathnormal">t</span><span class="mopen">(</span><span class="mord mathnormal" style="margin-right:0.10903em;">M</span><span class="mclose">)</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.936em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span></span></span></span></span></eqn></section></math>
+<hr>
+<h2 id="sift-descriptor">SIFT descriptor</h2>
+<p>Following pseudo code was adapted from the <em>Computer vision: models, learning and inference</em> by Simon Prince [1].</p>
+<pre><code>Compute gradient orientation and amplitude maps over a 16 X 16 pixel region around the interest point
+Divide 16 X 16 detector region into a regular grid of non-overlapping 4x4 cells
+Within each of these cells, compute an 8 dimensional histogram of the image orientations
+Weight the histogram by the associated gradient amplitude and by distance 
+Concatenate 16 histograms to make 128 X 1 vector
+Normalize the vector
+</code></pre>
+<hr>
+<h2 id="nearest-neighbor-matching">Nearest neighbor matching</h2>
 <hr>
 <h2 id="experiments-and-results">Experiments and results</h2>
 <p>Following image data will be used during the prototyping step.</p>
@@ -154,6 +186,7 @@ distance between each vector for each descriptor and descriptor from openCV &lt;
 <h2 id="conclusion">Conclusion</h2>
 <hr>
 <h2 id="references">References</h2>
+<p>[1] Simon Prince, <em>Computer vision: models, learning and inference</em>, Cambridge University Press, 2012.</p>
 <hr>
 <h4 id="-aziz-shaik-and-bug-lee">© Aziz Shaik and Bug Lee</h4>
 
