@@ -14,7 +14,7 @@
 
 Although computer vision is a relatively new topic, great amounts of time and effort have been put into by professionals and researchers in the last few decades. As a result, many sophisticated algorithms have been developed that most computer vision application are built upon today. Fortunately, those algorithms are packaged and encapsulated into commercial/open-source libraries, so that user can focus on its application.  
 
-As a student in Computer Vision course however, our goal is to gain concrete idea of some of the well-known topics in computer vision by creating our own library from scratch. Topics include Harris corner detector, SIFT descriptor, and nearest neighbor matching which lay foundation for many correspondence problem in computer vision. The focus of the project is not to create a library that can compete with known library such as OpenCV, but to gain deeper understanding of existing libraries and ability to implement ideas for a existing/future computer language that may not have support for computer vision and its application.
+As a student in Computer Vision course however, our goal is to gain concrete idea of some of the well-known topics in computer vision by creating our own library from scratch. Topics include Harris corner detector, SIFT descriptor, and nearest neighbor matching which lay foundation for many correspondence problems in computer vision. The focus of the project is not to create a library that can compete with known library such as OpenCV, but to gain deeper understanding of existing libraries and ability to implement ideas for a existing/future computer language that may not have support for computer vision and its application.
 
 ---
 ## Approach
@@ -45,18 +45,31 @@ Following pseudo code describe the algorithm of Harris corner detector.
  \lambda_{min} \approx \frac{determinant(M)}{trace(M)}
  $$
 
- ### **Experiments and Result**
-First, basic test will be perform using following image (Figure 1).
-Then, more advance test will be perform by comparing the result with Harris detector from OpenCV (Figure 2).
+### **Automatic Scale Selection**
+Harris Detector itself is not invariant to scaling. Therefore scaling of the input 
+image might be necessary to find local maximum of the Harris response and 
+correctly identify corners. 
+For our implementation, Gaussian pyramid will be used to generate copies of
+input image with different scale and choose the one that give best Harris
+response.
+
+### **Experiments and Result**
+First, two basic tests will be perform using following images (Figure 1 and
+Figure 2).
+Then, more advance test will be perform by comparing the result with Harris detector from OpenCV (Figure 3).
 
 ![Basic test](images/harris_expected_result1.png)
 
 #### Figure 1. (a)Input image, (b)Expected output. Red circles indicate feature points.  
 
+![Basic scale invariant test](images/harris_expected_result3.png)
+
+#### Figure 2. (a)Expected output from un-scaled image, (b)Expected output from scaled version of input image used in (a). Red circles indicate feature points.  
+
 ` `
 
 ![Advance test](images/harris_expected_result2.png)
-#### Figure 2. Output using existing library such as OpenCV. Image was copied from the *Computer vision: models, learning and inference* by Simon Prince [1]. 
+#### Figure 3. Output using existing library such as OpenCV. Image was copied from the *Computer vision: models, learning and inference* by Simon Prince [1]. 
 
 ` `
 
@@ -77,23 +90,23 @@ Following pseudo code was adapted from the *Computer vision: models, learning an
     Concatenate 16 histograms to make 128 X 1 vector
     Normalize the vector
 
- ### **Experiments and Result**
- Certain well-defined feature points will be manually selected for the purpose of this testing. This will lead to automatic and more sophisticated matching problem in the next section. Correctness of the descriptor will be evaluated through 3 separate tests. Tests will be consider success only if all following 3 tests pass. Note that all images below were copied from the *Computer Vision: Algorithms and Applications* by Richard Szeliski [2].
- 1. Matching feature points where two images are differ by translation (Figure 3)
- 2. Matching feature points where two images are differ by rotation (Figure 4)
- 3. Matching feature points where two images are differ by different point of view (Figure 5)
+### **Experiments and Result**
+Certain well-defined feature points will be manually selected (perhaps using Harris detector) for the purpose of this testing. This will lead to automatic and more sophisticated matching problem in the next section. First, correctness of the descriptor will be evaluated through 3 basic tests. Tests will be consider success only if all following 3 tests pass. Note that all images below were copied from the *Computer Vision: Algorithms and Applications* by Richard Szeliski [2].
+ 1. Matching feature points where two images are differ by translation (Figure 4)
+ 2. Matching feature points where two images are differ by rotation (Figure 5)
+ 3. Matching feature points where two images are differ by different point of view (Figure 6)
    
 ![Translation test](images/sift_expected_result2.png)
 
-#### Figure 3. Two images differ by translation. Two red circles are expected to hold matching descriptor.
+#### Figure 4. Two images differ by translation. Two red circles are expected to hold matching descriptor.
 
 ![Translation test](images/sift_expected_result1.png)
 
-#### Figure 4. Two images differ by rotation. Two red circles are expected to hold matching descriptor.
+#### Figure 5. Two images differ by rotation. Two red circles are expected to hold matching descriptor.
 
 ![Translation test](images/sift_expected_result3.png)
 
-#### Figure 5. Two images differ by point of view. Two red circles are expected to hold matching descriptor.
+#### Figure 6. Two images differ by point of view. Two red circles are expected to hold matching descriptor.
 
 Again, once the above 3 tests pass, result will be compare to the SIFT function from existing library. Following to tests should pass for pre-selected feature points:
 
