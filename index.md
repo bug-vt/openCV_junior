@@ -29,6 +29,7 @@ As a student in Computer Vision course however, our goal is to gain concrete ide
 ---
 
 ## Harris corner detector
+### **Pseudo code**
 Following pseudo code describe the algorithm of Harris corner detector.
 
     Convert the given image to gray scale. 
@@ -43,6 +44,12 @@ Following pseudo code describe the algorithm of Harris corner detector.
  $$
  \lambda_{min} \approx \frac{determinant(M)}{trace(M)}
  $$
+
+ ### **Result**
+
+![Basic test](harris_expected_result1.png)
+
+#### Figure 1. (a)Input image, (b)Expected output. Red circles indicate feature points.
 
 ---
 ## SIFT descriptor
