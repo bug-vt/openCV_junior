@@ -47,7 +47,7 @@ Following pseudo code describe the algorithm of Harris corner detector.
 
  ### **Result**
 
-![Basic test](./harris_expected_result1.png)
+![Basic test](images/harris_expected_result1.png)
 
 #### Figure 1. (a)Input image, (b)Expected output. Red circles indicate feature points.
 
