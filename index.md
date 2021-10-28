@@ -47,7 +47,7 @@ Following pseudo code describe the algorithm of Harris corner detector.
 
  ### **Result**
 
-![Basic test](harris_expected_result1.png)
+![Basic test](./harris_expected_result1.png)
 
 #### Figure 1. (a)Input image, (b)Expected output. Red circles indicate feature points.
 
@@ -68,28 +68,6 @@ Following pseudo code was adapted from the *Computer vision: models, learning an
 
 
 
----
-## Experiments and results
-
-Following image data will be used during the prototyping step.
-
-![Test img](testImg.png)
-
-#### Figure 1. Place holder image. Need change.
-
-1. Harris corner detector
-
-Success if
-distance between (x, y) coordinate of points from our implementation and points from openCV < epsilon
-
-2. SIFT descriptor
-
-Success if
-distance between each vector for each descriptor and descriptor from openCV < epsilon 
-
-3. Nearest neighbor matching 
-
-Success if matching rate is within 10% of openCV matching rate.
 
 ---
 ## Qualitative results
