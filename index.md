@@ -50,8 +50,7 @@ Harris Detector itself is not invariant to scaling. Therefore scaling of the inp
 For our implementation, a Gaussian pyramid will be used to generate copies of the input image with different scales and choose the one that gives the best Harris response.
 
 ### **Experiments and Result**
-First, two basic tests will be performed using the following images (Figure 1 and
-Figure 2).
+First, two basic tests will be performed using the following images (Figure 1 and Figure 2).
 Then, more advanced tests will be performed by comparing the result with the Harris detector from OpenCV (Figure 3).
 
 ![Basic test](images/harris_expected_result1.png)
@@ -104,7 +103,7 @@ Certain well-defined feature points will be manually selected (perhaps using a H
 
 #### Figure 6. Two images differ by point of view. Two red circles are expected to hold a matching descriptor.
 
-Again, once the above 3 tests pass, the result will be compared to the SIFT function from the existing library. Following to tests should pass for pre-selected feature points:
+Again, once the above 3 tests pass, the result will be compared to the SIFT function from the existing library. The following two tests should pass for pre-selected feature points:
 
 1. Computed vector matches with the output vector from the exiting library. 
 2. Performance difference is within the range of a few magnitudes. This is only used as a rough guideline to check whether we are not introducing unnecessary computation or performance bottleneck in our implementation.

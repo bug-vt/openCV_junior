@@ -154,8 +154,7 @@ Choose the local maximum of those points as features
 <p>Harris Detector itself is not invariant to scaling. Therefore scaling of the input image might be necessary to find the local maximum of the Harris response and correctly identify corners.
 For our implementation, a Gaussian pyramid will be used to generate copies of the input image with different scales and choose the one that gives the best Harris response.</p>
 <h3 id="experiments-and-result"><strong>Experiments and Result</strong></h3>
-<p>First, two basic tests will be performed using the following images (Figure 1 and
-Figure 2).
+<p>First, two basic tests will be performed using the following images (Figure 1 and Figure 2).
 Then, more advanced tests will be performed by comparing the result with the Harris detector from OpenCV (Figure 3).</p>
 <p><img src="images\harris_expected_result1.png" alt="Basic test"></p>
 <h4 id="figure-1-ainput-image-bexpected-output-red-circles-indicate-feature-points">Figure 1. (a)Input image, (b)Expected output. Red circles indicate feature points.</h4>
@@ -194,7 +193,7 @@ Normalize the vector
 <h4 id="figure-5-two-images-differ-by-rotation-two-red-circles-are-expected-to-hold-a-matching-descriptor">Figure 5. Two images differ by rotation. Two red circles are expected to hold a matching descriptor.</h4>
 <p><img src="images\sift_expected_result3.png" alt="Translation test"></p>
 <h4 id="figure-6-two-images-differ-by-point-of-view-two-red-circles-are-expected-to-hold-a-matching-descriptor">Figure 6. Two images differ by point of view. Two red circles are expected to hold a matching descriptor.</h4>
-<p>Again, once the above 3 tests pass, the result will be compared to the SIFT function from the existing library. Following to tests should pass for pre-selected feature points:</p>
+<p>Again, once the above 3 tests pass, the result will be compared to the SIFT function from the existing library. The following two tests should pass for pre-selected feature points:</p>
 <ol>
 <li>Computed vector matches with the output vector from the exiting library.</li>
 <li>Performance difference is within the range of a few magnitudes. This is only used as a rough guideline to check whether we are not introducing unnecessary computation or performance bottleneck in our implementation.</li>
