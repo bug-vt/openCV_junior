@@ -111,31 +111,31 @@ aside > *:last-child {
     </head>
     <body class="vscode-body vscode-light">
         <link rel="stylesheet" href="styles.css">
-<h1 id="project-title">Project Title</h1>
+<h1 id="project-title">Manual Implementation and Analysis of Selected Correspondence-Related Functions</h1>
 <h4 id="aziz-shaik-and-bug-lee">Aziz Shaik and Bug Lee</h4>
-<h4 id="fall-2021-ece-4554-computer-vision-course-project">Fall 2021 ECE 4554 Computer Vision: Course Project</h4>
+<h4 id="fall-2021-ece-4554-computer-vision-course-project">ECE 4554: Computer Vision, Fall 2021</h4>
 <h4 id="virginia-tech">Virginia Tech</h4>
 <hr>
 <h2 id="abstract">Abstract</h2>
 <hr>
 <h2 id="introduction">Introduction</h2>
-<p>Although computer vision is a relatively new topic, great amounts of time and effort have been put into it by professionals and researchers in the last few decades. As a result, many sophisticated algorithms have been developed that most computer vision applications are built upon today. Fortunately, those algorithms are packaged and encapsulated into commercial/open-source libraries, so that users can focus on its application.</p>
-<p>As a student in the Computer Vision course, however, our goal is to gain a concrete idea of some of the well-known topics in computer vision by creating our own library from scratch. Topics include Harris corner detector, SIFT descriptor, and nearest-neighbor matching which lay the foundation for many correspondence problems in computer vision. The focus of the project is not to create a library that can compete with a known library such as OpenCV, but to gain a deeper understanding of existing libraries and the ability to implement ideas for an existing/future computer language that may not have support for computer vision and its application.</p>
+<p>Although computer vision is a relatively new topic, great amounts of time and effort have been put into it by professionals and researchers in the last few decades. As a result, many sophisticated algorithms have been developed that most computer vision applications are built upon today. Fortunately, these algorithms are packaged and encapsulated into commercial/open-source libraries, so that users can focus more on their application as opposed to low level implementations.</p>
+<p>However, as students studying computer vision, our goal is to gain a more concrete idea of some of the well-known topics in computer vision by creating our own library from scratch. Topics we have chosen to focus on include the Harris corner detector, the SIFT descriptor, and the nearest-neighbor matching algorithm, all of which lay the foundation for many correspondence problems in computer vision. The focus of the project is not to create a library that can compete with a known library such as OpenCV, but to gain a deeper understanding of existing libraries and the ability to implement ideas for an existing/future computer language that may not have support for computer vision and its application.</p>
 <hr>
 <h2 id="approach">Approach</h2>
 <ul>
-<li>We will first prototype the library using Python since it reduces the burden of creating helper functions such as vector/matrix multiplication, displaying image buffer, and array/list manipulation. Two libraries that will be used are:
+<li>We will first prototype the library using Python since it reduces the burden of creating helper functions such as vector/matrix multiplication, displaying image buffers, and array/list manipulation. Two libraries that will be used are:
 <ul>
 <li>NumPy</li>
 <li>Python Imaging Library (PIL)</li>
 </ul>
 </li>
 <li>During the prototyping step, we will also analyze what part of the algorithm is causing the performance bottleneck. This will provide a better understanding of the strengths and weaknesses of the given algorithm in computer vision and suggest when and where to use it for best performance.</li>
-<li>Each function will be unit tested for correctness by comparing output with the corresponding OpenCV library function.</li>
-<li>Transition to C++ will be considered once we identify all the algorithms are implemented correctly and after the unit testing step.</li>
+<li>Each function will be unit tested for correctness by comparing output with the corresponding OpenCV library function and/or performance detailed in published research.</li>
+<li>A transition to C++ will be considered once we identify all the algorithms are implemented correctly and after the unit testing step.</li>
 </ul>
 <hr>
-<h2 id="harris-corner-detector">Harris corner detector</h2>
+<h2 id="harris-corner-detector">Harris Corner Detector</h2>
 <h3 id="pseudo-code"><strong>Pseudo code</strong></h3>
 <p>Following pseudo code describe the algorithm of Harris corner detector.</p>
 <pre><code>Convert the given image to gray scale. 
@@ -157,9 +157,9 @@ For our implementation, a Gaussian pyramid will be used to generate copies of th
 <p>First, two basic tests will be performed using the following images (Figure 1 and Figure 2).
 Then, more advanced tests will be performed by comparing the result with the Harris detector from OpenCV (Figure 3).</p>
 <p><img src="static\harris_expected_result1.png" alt="Basic test"></p>
-<h4 id="figure-1-ainput-image-bexpected-output-red-circles-indicate-feature-points">Figure 1. (a)Input image, (b)Expected output. Red circles indicate feature points.</h4>
+<h4 id="figure-1-ainput-image-bexpected-output-red-circles-indicate-feature-points">Figure 1. (a) Input image, (b) Expected output. Red circles indicate feature points.</h4>
 <p><img src="static\harris_expected_result3.png" alt="Basic scale invariant test"></p>
-<h4 id="figure-2-aexpected-output-from-un-scaled-image-bexpected-output-from-scaled-version-of-input-image-used-in-a-red-circles-indicate-feature-points">Figure 2. (a)Expected output from un-scaled image, (b)Expected output from scaled version of input image used in (a). Red circles indicate feature points.</h4>
+<h4 id="figure-2-aexpected-output-from-un-scaled-image-bexpected-output-from-scaled-version-of-input-image-used-in-a-red-circles-indicate-feature-points">Figure 2. (a) Expected output from un-scaled image, (b) Expected output from scaled version of input image used in (a). Red circles indicate feature points.</h4>
 <p><code> </code></p>
 <p><img src="static\harris_expected_result2.png" alt="Advance test"></p>
 <h4 id="figure-3-output-using-existing-library-such-as-opencv-image-was-copied-from-the-computer-vision-models-learning-and-inference-by-simon-prince-1">Figure 3. Output using existing library such as OpenCV. Image was copied from the <em>Computer vision: models, learning and inference</em> by Simon Prince [1].</h4>
