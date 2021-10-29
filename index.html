@@ -119,20 +119,20 @@ aside > *:last-child {
 <h2 id="abstract">Abstract</h2>
 <hr>
 <h2 id="introduction">Introduction</h2>
-<p>Although computer vision is a relatively new topic, great amounts of time and effort have been put into by professionals and researchers in the last few decades. As a result, many sophisticated algorithms have been developed that most computer vision application are built upon today. Fortunately, those algorithms are packaged and encapsulated into commercial/open-source libraries, so that user can focus on its application.</p>
-<p>As a student in Computer Vision course however, our goal is to gain concrete idea of some of the well-known topics in computer vision by creating our own library from scratch. Topics include Harris corner detector, SIFT descriptor, and nearest neighbor matching which lay foundation for many correspondence problems in computer vision. The focus of the project is not to create a library that can compete with known library such as OpenCV, but to gain deeper understanding of existing libraries and ability to implement ideas for a existing/future computer language that may not have support for computer vision and its application.</p>
+<p>Although computer vision is a relatively new topic, great amounts of time and effort have been put into it by professionals and researchers in the last few decades. As a result, many sophisticated algorithms have been developed that most computer vision applications are built upon today. Fortunately, those algorithms are packaged and encapsulated into commercial/open-source libraries, so that users can focus on its application.</p>
+<p>As a student in the Computer Vision course, however, our goal is to gain a concrete idea of some of the well-known topics in computer vision by creating our own library from scratch. Topics include Harris corner detector, SIFT descriptor, and nearest-neighbor matching which lay the foundation for many correspondence problems in computer vision. The focus of the project is not to create a library that can compete with a known library such as OpenCV, but to gain a deeper understanding of existing libraries and the ability to implement ideas for an existing/future computer language that may not have support for computer vision and its application.</p>
 <hr>
 <h2 id="approach">Approach</h2>
 <ul>
-<li>We will first prototype the library using Python since it reduce the burden of creating helper functions such as vector/matrix multiplication, displaying image buffer, and array/list manipulation. Two libraries that will be used are:
+<li>We will first prototype the library using Python since it reduces the burden of creating helper functions such as vector/matrix multiplication, displaying image buffer, and array/list manipulation. Two libraries that will be used are:
 <ul>
 <li>NumPy</li>
 <li>Python Imaging Library (PIL)</li>
 </ul>
 </li>
-<li>During the prototyping step, we will also analyze what part of the algorithm is causing the performance bottleneck. This will provide better understanding of strengths and weaknesses of the given algorithm in computer vision and suggest when and where to use it for best performance.</li>
-<li>Each function will be unit tested for correctness by comparing output with corresponding OpenCV library function.</li>
-<li>Transition to C++ will be consider once we identify all the algorithms are implemented correctly and after the unit testing step.</li>
+<li>During the prototyping step, we will also analyze what part of the algorithm is causing the performance bottleneck. This will provide a better understanding of the strengths and weaknesses of the given algorithm in computer vision and suggest when and where to use it for best performance.</li>
+<li>Each function will be unit tested for correctness by comparing output with the corresponding OpenCV library function.</li>
+<li>Transition to C++ will be considered once we identify all the algorithms are implemented correctly and after the unit testing step.</li>
 </ul>
 <hr>
 <h2 id="harris-corner-detector">Harris corner detector</h2>
@@ -151,16 +151,12 @@ Choose the local maximum of those points as features
  \lambda_{min} \approx \frac{determinant(M)}{trace(M)}
  </annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.84444em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">λ</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.31166399999999994em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">min</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">≈</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:2.363em;vertical-align:-0.936em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.427em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathnormal">t</span><span class="mord mathnormal" style="margin-right:0.02778em;">r</span><span class="mord mathnormal">a</span><span class="mord mathnormal">ce</span><span class="mopen">(</span><span class="mord mathnormal" style="margin-right:0.10903em;">M</span><span class="mclose">)</span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathnormal">d</span><span class="mord mathnormal">e</span><span class="mord mathnormal">t</span><span class="mord mathnormal" style="margin-right:0.02778em;">er</span><span class="mord mathnormal">minan</span><span class="mord mathnormal">t</span><span class="mopen">(</span><span class="mord mathnormal" style="margin-right:0.10903em;">M</span><span class="mclose">)</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.936em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span></span></span></span></span></eqn></section></math>
 <h3 id="automatic-scale-selection"><strong>Automatic Scale Selection</strong></h3>
-<p>Harris Detector itself is not invariant to scaling. Therefore scaling of the input
-image might be necessary to find local maximum of the Harris response and
-correctly identify corners.
-For our implementation, Gaussian pyramid will be used to generate copies of
-input image with different scale and choose the one that give best Harris
-response.</p>
+<p>Harris Detector itself is not invariant to scaling. Therefore scaling of the input image might be necessary to find the local maximum of the Harris response and correctly identify corners.
+For our implementation, a Gaussian pyramid will be used to generate copies of the input image with different scales and choose the one that gives the best Harris response.</p>
 <h3 id="experiments-and-result"><strong>Experiments and Result</strong></h3>
-<p>First, two basic tests will be perform using following images (Figure 1 and
+<p>First, two basic tests will be performed using the following images (Figure 1 and
 Figure 2).
-Then, more advance test will be perform by comparing the result with Harris detector from OpenCV (Figure 3).</p>
+Then, more advanced tests will be performed by comparing the result with the Harris detector from OpenCV (Figure 3).</p>
 <p><img src="images\harris_expected_result1.png" alt="Basic test"></p>
 <h4 id="figure-1-ainput-image-bexpected-output-red-circles-indicate-feature-points">Figure 1. (a)Input image, (b)Expected output. Red circles indicate feature points.</h4>
 <p><img src="images\harris_expected_result3.png" alt="Basic scale invariant test"></p>
@@ -169,11 +165,11 @@ Then, more advance test will be perform by comparing the result with Harris dete
 <p><img src="images\harris_expected_result2.png" alt="Advance test"></p>
 <h4 id="figure-3-output-using-existing-library-such-as-opencv-image-was-copied-from-the-computer-vision-models-learning-and-inference-by-simon-prince-1">Figure 3. Output using existing library such as OpenCV. Image was copied from the <em>Computer vision: models, learning and inference</em> by Simon Prince [1].</h4>
 <p><code> </code></p>
-<p>Using the same same threshold value, tests will consider success if</p>
+<p>Using the same threshold value, tests will consider success if</p>
 <ol>
-<li>Difference in number of feature points between our implementation and existing library function is within 10%.</li>
+<li>Difference in the number of feature points between our implementation and the existing library function is within 10%.</li>
 <li>Positions of resulting local maxima(s) match with the output from the existing library function.</li>
-<li>Performance difference is within the range of few magnitude. This is only use as a rough guideline to check whether we are not introducing unnecessary computation or performance bottleneck in our implementation.</li>
+<li>Performance difference is within the range of a few magnitudes. This is only used as a rough guideline to check whether we are not introducing unnecessary computation or performance bottleneck in our implementation.</li>
 </ol>
 <hr>
 <h2 id="sift-descriptor">SIFT descriptor</h2>
@@ -186,22 +182,22 @@ Concatenate 16 histograms to make 128 X 1 vector
 Normalize the vector
 </code></pre>
 <h3 id="experiments-and-result-1"><strong>Experiments and Result</strong></h3>
-<p>Certain well-defined feature points will be manually selected (perhaps using Harris detector) for the purpose of this testing. This will lead to automatic and more sophisticated matching problem in the next section. First, correctness of the descriptor will be evaluated through 3 basic tests. Tests will be consider success only if all following 3 tests pass. Note that all images below were copied from the <em>Computer Vision: Algorithms and Applications</em> by Richard Szeliski [2].</p>
+<p>Certain well-defined feature points will be manually selected (perhaps using a Harris detector) for this testing. This will lead to automatic and more sophisticated matching problems in the next section. First, the correctness of the descriptor will be evaluated through 3 basic tests. Tests will be considered a success only if all following 3 tests pass. Note that all images below were copied from the <em>Computer Vision: Algorithms and Applications</em> by Richard Szeliski [2].</p>
 <ol>
-<li>Matching feature points where two images are differ by translation (Figure 4)</li>
-<li>Matching feature points where two images are differ by rotation (Figure 5)</li>
-<li>Matching feature points where two images are differ by different point of view (Figure 6)</li>
+<li>Descriptors with matching feature points where two images are differed by translation (Figure 4)</li>
+<li>Descriptors with matching feature points where two images are differed by rotation (Figure 5)</li>
+<li>Descriptors with matching feature points where two images are differed by different points of view (Figure 6)</li>
 </ol>
 <p><img src="images\sift_expected_result2.png" alt="Translation test"></p>
-<h4 id="figure-4-two-images-differ-by-translation-two-red-circles-are-expected-to-hold-matching-descriptor">Figure 4. Two images differ by translation. Two red circles are expected to hold matching descriptor.</h4>
+<h4 id="figure-4-two-images-differ-by-translation-two-red-circles-are-expected-to-hold-a-matching-descriptor">Figure 4. Two images differ by translation. Two red circles are expected to hold a matching descriptor.</h4>
 <p><img src="images\sift_expected_result1.png" alt="Translation test"></p>
-<h4 id="figure-5-two-images-differ-by-rotation-two-red-circles-are-expected-to-hold-matching-descriptor">Figure 5. Two images differ by rotation. Two red circles are expected to hold matching descriptor.</h4>
+<h4 id="figure-5-two-images-differ-by-rotation-two-red-circles-are-expected-to-hold-a-matching-descriptor">Figure 5. Two images differ by rotation. Two red circles are expected to hold a matching descriptor.</h4>
 <p><img src="images\sift_expected_result3.png" alt="Translation test"></p>
-<h4 id="figure-6-two-images-differ-by-point-of-view-two-red-circles-are-expected-to-hold-matching-descriptor">Figure 6. Two images differ by point of view. Two red circles are expected to hold matching descriptor.</h4>
-<p>Again, once the above 3 tests pass, result will be compare to the SIFT function from existing library. Following to tests should pass for pre-selected feature points:</p>
+<h4 id="figure-6-two-images-differ-by-point-of-view-two-red-circles-are-expected-to-hold-a-matching-descriptor">Figure 6. Two images differ by point of view. Two red circles are expected to hold a matching descriptor.</h4>
+<p>Again, once the above 3 tests pass, the result will be compared to the SIFT function from the existing library. Following to tests should pass for pre-selected feature points:</p>
 <ol>
-<li>Computed vector matches with the output vector from exiting library.</li>
-<li>Performance difference is within the range of few magnitude. This is only use as a rough guideline to check whether we are not introducing unnecessary computation or performance bottleneck in our implementation.</li>
+<li>Computed vector matches with the output vector from the exiting library.</li>
+<li>Performance difference is within the range of a few magnitudes. This is only used as a rough guideline to check whether we are not introducing unnecessary computation or performance bottleneck in our implementation.</li>
 </ol>
 <hr>
 <h2 id="nearest-neighbor-matching">Nearest neighbor matching</h2>
