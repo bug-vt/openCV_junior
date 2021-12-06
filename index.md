@@ -43,7 +43,7 @@ As a student in the Computer Vision course, however, our goal is to gain a concr
  
 # SIFT detector/descriptor
 ## **1. Pseudo code**
-Following pseudo code describe the algorithm of SIFT detector. The algorithm was adapted from the Lowe's paper, _Distinctive Image Features from Scale-Invariant Keypoints_ [1].
+Following pseudo code describe the algorithm of SIFT detector. The algorithm was adapted from the Lowe's paper, _Distinctive Image Features from Scale-Invariant Keypoints_ and Sinha's web tutorial, _SIFT: Theory and Practice_[1, 2].
 
     Convert the given image to gray scale. 
     Generate Gaussian pyramid of the base image.
@@ -52,6 +52,7 @@ Following pseudo code describe the algorithm of SIFT detector. The algorithm was
     Locate maxima, potential key points, from the DoG.
     Remove low contrast and/or edge from the potential key points.
     Assign orientation to the each key points.
+    Assign feature to each key points.
 
 ## **2. Input image**
 The following image was used for implementing SIFT detector (Figure 1). However, actual image that was used for entire SIFT detector algorithm is a converted gray scale image (Figure 2).
@@ -66,42 +67,67 @@ The following image was used for implementing SIFT detector (Figure 1). However,
 ## **3. Gaussian pyramid**
 SIFT detector first has to generate scale space, representing different scale of the input image. Gaussian pyramid was used to prepare for this, where it set up 4 octave layers as recommended in the Lowe paper [1]. Note that first layer of the pyramid is a up-sampled image. This was done to account for removal of high frequencies in original image due to pre-smoothing [1].
 
-
 ![Gaussian pyramid](static/pyramid.png)
 #### Figure 3. Gaussian pyramid of the input image.
 
 
 ## **4. The scale space**
-As mention above, scale space represent different scale of the input image. This was necessary to identify 'blob' with the appropriate size. In addition to 4 octave layers that was generated from the Gaussian pyramid, adding level layers (5 level base on the Lowe's paper) to each octave layer gave a finer control over scaling. 
+As mention above, scale space represent different scale of the input image. This was necessary to identify 'blob' with the appropriate size, making SIFT detector scale invariant. Several layer of level was added to each of the octave. The idea was to progressively remove the detail, or higher frequency, of the input image through each level. Gaussian smoothing with parameter $k^i \sigma$ was applied to corresponding level, where $k = \sqrt{2}, \sigma = 1.6,$ and $i$ is the level within the octave. In addition to 4 octave layers that was generated from the Gaussian pyramid, adding 5 layers of level layers to each octave layer gave a finer control over scaling. Note that all the values were directly adapted from the Lowe's paper.
 
 ![Scale space](static/scale_space.png)
 #### Figure 4. Generated scale space of the input image. Some of the images were cut off.
 
 ## **5. LoG approximations**
+The Laplacian of Gaussian (LoG) is a well known operation to locate edges and corners in the image. However, as discussed in the performance section, applying kernel to all images in the scale space is a computationally expensive task. Lowe's paper suggested a clever trick; (with the right set up) Difference of Gaussian (DoG) can closely approximate the LoG. Since scale space have been already computed with the Gaussian smoothing, only task left to do was subtracting image at the current level with the next level.  
 
 ![DoG](static/DoG.png)
+#### Figure 5. Computing Difference of Gaussian using scale space. This figure only represent the computation in one octave. Also note that output magnitude was magnified for clearer visual.
+
 
 ## **6. Computing local maxima**
+The DoG from the previous section contains information about edges and corners. As a next step to identify potential key points, local maxima was computed for each pixel. However, unlike 2 dimensional local maxima computation which only check for 8 neighboring pixels that surround the center pixel, 3 dimensional local maxima was needed. Therefore, in addition to 8 neighboring pixels, 9 pixel from the level above and 9 pixel from the level below, total of 26 was checked to see if the referencing center pixel was a local maxima. (Figure 6)
+
+![Local maxima in 3 dimension](static/sift-local-maxima.jpg)
+#### Figure 6. 3D local maxima. 26 neighboring pixels was checked to see if the referencing center pixel was a local maxima. Image was copied from the Lowe's paper [1]. 
+
+The idea was to identify the potential key points at the most appropriate scale. Note that top most and bottom most level were ignored since those do not have either layer above or below for 3D maxima. This is the reason why up-sampled input image was added during the Gaussian pyramid generation.
 
 ![Local maxima](static/local_maxima.png)
+#### Figure 7. Computing local maxima from using result from DoG. This figure only represent the computation in one octave. Again, output magnitude was magnified for clearer visual. 
 
-## **7. Removing edge and low contrast points**
+
+## **7. Removing low contrast points and edges**
+Once the potential key points were identified from the previous section, additional checking was performed to remove low contrast points and edges. Removing low contrast points was done by setting a threshold. Threshold of 0.03 (in 0-1 scale) was suggested in the Lowe's paper, so 7.65 (0-255 scale) was used for our implementation. On the other hand, Hessian matrix was used to determine principal curvature and remove edges. 
+$$ Tr(H) = D_{xx} + D_{yy} $$
+$$ Det(H) = D_{xx}D_{yy} - (D_{xy})^2 $$
+Where key point at $(x,y)$ was consider as an edge when 
+$$ \frac{Tr(H)^2}{Det(H)} > \frac{(r+1)^2}{r}$$
+The threshold $r=10$ was used for our implementation as Lowe suggested in his paper.
 
 ![Edge and low contrast key points removed](static/remove_edge_and_low_contrast.png)
+#### Figure 8. Removal of edge and low contrast points from the result obtain from the previous section. This figure only represent the computation in one octave. Again, output magnitude was magnified for clearer visual.
+
 
 ## **8. Orientation of key points**
+As a final step for the SIFT detector (one step before SIFT descriptor), orientation was assigned to each key points. The orientation was determined by generating histogram with 36 bin, each bin representing 10 degrees in range, and taking the bin with maximum value. We have also call this a 'voting' method. First, point and neighborhood that would contribute to voting was selected. The size of the neighborhood was determined by the scale $\sigma$ of the point, which can be calculated by finding which octave and level the point associate with. Then, magnitude and angle of each pixel within the neighborhood was calculated using the formula from the Lowe's paper:
+$$ m(x,y) = \sqrt{(L(x+1, y) - L(x-1,y))^2 + (L(x,y+1) - L(x,y-1))^2} $$
+$$ \theta(x,y) = \tan^{-1}((L(x,y+1)-L(x,y-1)) / (L(x+1,y)-L(x-1,y)))$$
+where $L$ is a Gaussian smoothed image from the scale space determine by the scale of the selected key point.  
+Once the magnitude and angle was found, then the pixel would 'vote' to one of the 36 bins that it correspond with. For example, if angle of the pixel was found to be 24, it would vote to bin 2 which represent angle range between 20-29 degrees. Also note that voting is weighted by the magnitude, so that pixel with higher magnitude contribute more. After all pixel within the neighborhood voted, the bin with the highest vote will be the orientation of the selected key point.
+Lowe's paper also suggested to create new key points with orientations that were close to the peak (with in 80%) for increase stability during key point matching. Therefore, Our implementation have incorporated that as well.
 
 ![key points with orientation](static/keypoints_orientation.png)
+#### Figure 9. Resulting key points after orientation assignment. Note that scale representation of key points were magnified by factor of 2 for clearer visual.
 
 
 
 ## **9. Generating SIFT feature**
-Following pseudo code was adapted from the *Computer vision: models, learning and inference* by Simon Prince [1]. 
+The following pseudo code was used for our implementation. It was adapted from the *Computer vision: models, learning and inference* by Simon Prince [2]. 
 
     Compute gradient orientation and amplitude maps over a 16 X 16 pixel region around the interest point
     Divide 16 X 16 detector region into a regular grid of non-overlapping 4x4 cells
     Within each of these cells, compute an 8 dimensional histogram of the image orientations
-    Weight the histogram by the associated gradient amplitude and by distance 
+    Weight the histogram by the associated gradient amplitude and by distance (using Gaussian curve) 
     Concatenate 16 histograms to make 128 X 1 vector
     Normalize the vector
 
@@ -109,17 +135,20 @@ Following pseudo code was adapted from the *Computer vision: models, learning an
 
 ![SIFT detector result](static/sift_detector_result.png)
 ![SIFT descriptor result](static/sift_descriptor.png)
+#### Figure 10. Result of SIFT detector (top) and matching SIFT feature (bottom). 
 
 ## **11. Performance**
-| Function | time (seconds) |
-| -------- | -------------- |
-| Gaussian pyramid | 17.19 |
-| Scale space | 36.47 |
-| Difference of Gaussian | 0.45 |
-| Locate maxima | 5.57 |
-| Edge and low contrast keypoints removal | 22.75 |
-| Orientation assignments | 0.86 |
-| Generating SIFT features | 1.99 |
+As shown below, there are 3 major bottle neck present in our implementation: Gaussian pyramid generation, scale space generation, and low contrast and edge removal process. Although time complexity of all functions, except sift descriptor, are quadratically grow as the input image size doubled, first two functions are affected more heavily as those involve applying Gaussian kernel to each pixel. Unless there is a alternative and more efficient way of applying kernel, performance of Gaussian pyramid and scale space generation always will be the limiting factor. On the other hand, low contrast and edge removal can be improve. For simplicity reason, we have implemented _locate_maxima()_ to return entire image instead of array of key points. However, since the number of potential key points that generated from the _locate_maxima()_ are generally much lower than the number of pixels in the image, latter implementation would have made our SIFT operation faster.
+
+| Function | 200 x 150 | 400 x 300 | 800 x 600 |
+| -------- | :--------------: | :----: | :---: |
+| Gaussian pyramid | 4.20 s | 17.19 s | 67.49 s |
+| Scale space | 8.90 s | 36.47 s | 143.36 s |
+| Difference of Gaussian | 0.12 s | 0.45 s | 1.69 s | 
+| Locate maxima | 1.43 s | 5.57 s | 22.28 s |
+| Low contrast and edge removal | 5.73 s | 22.75 s | 93.32 s |
+| Orientation assignments | 0.24 s | 0.86 s | 3.47 s |
+| Generating SIFT features | 0.70 s | 1.99 s | 12.42 s |
 
 
 ---
@@ -131,7 +160,7 @@ Following pseudo code was adapted from the *Computer vision: models, learning an
 ---
 # Qualitative results
 ## **1. Experiment set up**
-Certain well-defined feature points was manually selected using a SIFT detector for this testing. The correctness of the descriptor was evaluated by the following 3 tests.
+Key points and features were generated using SIFT detector/descriptor for this testing. The correctness of the descriptor was evaluated by the following 3 tests.
  1. Descriptors with matching feature points where two images are differed by translation (Figure 4)
  2. Descriptors with matching feature points where two images are differed by rotation (Figure 5)
  3. Descriptors with matching feature points where two images are differed by different points of view (Figure 6)
