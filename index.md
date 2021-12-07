@@ -178,21 +178,71 @@ As shown below, there are 3 major bottle neck present in our implementation: Gau
 
 ---
 # Nearest neighbor matching
+## **1. Approach**
+For this component, descriptors were presumed to have been calculated by SIFT or some other descriptor algorithm, and with some distance function (L1 norm or L2 norm), the distances between the various descriptors were calculated. Based on these calculated values, the two lowest distances were used to calculate the Nearest Neighbor Distance Ratio (NNDR). When compared to the user inputted threshold, if the computed NNDR is lower, the descriptors in question are not considered to be matching
 
+Note that the NNDR is defined below, where <em>d</em><sub>1</sub> is the distance between <em>D</em><sub>A</sub>, an arbitrary descriptor in the reference image, and <em>D</em><sub>B</sub>, the closest descriptor in the transformed image, while <em>d</em><sub>2</sub> is the distance between <em>D</em><sub>A</sub> and <em>D</em><sub>C</sub>, the second closest descriptor in the transformed image [4].
 
+$$\text{NNDR}=\frac{d_1}{d_2}=\frac{\left \| D_A-D_B \right \|}{\left \| D_A-D_C \right \|}$$
 
+In order to use the created nn_match function, the user had to input the following parameters:
+*kp_src: Source Keypoints, shape (N, 2)
+*kp_dst: Destination Keypoints, shape (N, 2)
+*desc_src: Source Descriptors, shape (N, 128)
+*desc_dst: Destination Descriptors, shape (N, 128)
+*t: Threshold to compare NNDR to
+*d_func: Distance function to be used, L1 or L2
+
+Although testing did not return good results for the L2 distance function and the L1 distance function giving far better results, this option was still put in for the user to decide.
+
+## **2. Results**
+We can start by examining some results for the L2 distance function with the nearest neighbor matching, which are as follows with 102 keypoints and a threshold of 0.99. Of those 102 keypoints, it has located 42 matches, of which none are correct. Figure 17 shows the same distance function, with only 15 matches, of which none are correct either. A common trend with this matching algorithm is that as the threshold is decreased, the number of matches found also decreases.
+
+![L2 norm with 0.99 threshold](static/nn_match0.99_l2.png)
+#### Figure 16. L2 norm distance function with 0.99 threshold 
+
+![L2 norm with 0.98 threshold](static/nn_match0.98_l2.png)
+#### Figure 17. L2 norm distance function with 0.98 threshold 
+
+When the L2 norm distance function is used with a threshold of less than 0.98, no matches are found.
+
+The more successful distance function was the L1 norm distance function, or the Manhattan distance function. Figure 18 shows the matches between the two images and it finds 85 matches here. The accuracy of these matches is noticeably higher than the L1 norm distance function, but there are still quite a few erroneous matches. If the threshold is lowered down to 0.75 as shown in Figure 19, this error rate is drastically decreased and there is only 1 incorrect match out of 36 matches found. Eventually reducing the threshold down to 0.7 results in Figure 20 with 34 matches, all correct.
+
+![L1 norm with 0.98 threshold](static/nn_match0.98_l1.png)
+#### Figure 18. L2 norm distance function with 0.98 threshold 
+
+![L1 norm with 0.75 threshold](static/nn_match0.75_l1.png)
+#### Figure 19. L2 norm distance function with 0.75 threshold 
+
+![L1 norm with 0.70 threshold](static/nn_match0.7_l1.png)
+#### Figure 20. L2 norm distance function with 0.70 threshold 
+
+While the L2 norm distance function proved to be unsuccessful, this was compensated by the success of the L1 norm distance function within the algorithm. In future iterations of this project, using the L1 norm distance function could be optimized to return more matching keypoints, instead of simply the 34 matches out of 102 keypoints found with the best performing threshold. 
+
+In terms of computational analysis, the distance function calculations took the most time so these were the ones that are shown in the table below. One general trend that can be seen is that the lower the threshold, the greater amount of time it takes as lower thresholds result in more matches being compared with and thus, more distances computed.
+
+| Distance Function | Threshold | Time Taken (Distance Calculation) (s) | Time Taken (Overall) (s) |
+|-------------------|-----------|---------------------------------------|--------------------------|
+| L1                | 0.25      | 1.355                                 | 1.357                    |
+| L1                | 0.50      | 1.300                                 | 1.305                    |
+| L1                | 0.75      | 1.301                                 | 1.311                    |
+| L1                | 0.99      | 1.298                                 | 1.307                    |
+| L2                | 0.25      | 4.494                                 | 4.471                    |
+| L2                | 0.50      | 4.462                                 | 4.503                    |
+| L2                | 0.75      | 4.451                                 | 4.497                    |
+| L2                | 0.99      | 4.456                                 | 4.
 
 ---
 ---
 # Conclusion
-Through re-implementation of some of the popular computer vision library ourselves, we were able to see many clever idea and insight and how people tried to approach the correspondence problem. SIFT detector/descriptor in particular assemble several idea that are common in computer vision in one place and require multiple steps to produce the useful SIFT features. It first need to generate scale space, where each octave and level progressively hide away detail to represent image in bigger scale. It then use computed scale space to compute DoG, which is approximate LoG. From the edges and corners obtain from the DoG, it find the local maxima, potential key points. Set of key points are refined by removing key points with low contrast or edges. Key points that survived would then get the orientation assigned, where neighboring pixels surrounds the key points vote for its best representing orientation. Only after all this step, we have obtained what we called SIFT key points. Obtaining a SIFT feature required one more step, neighboring pixels were sub-divided into 16 regions, where each region compute 8x1 vector base on the similar voting technique used for orientation assignment, then combine all resulting vectors to form 128x1 descriptor representing a feature. Performance was bottle necked during the scale space generation step. We believe that such bottle neck cannot be avoided unless there is better alternative for applying Gaussian kernel. On the other hand, some speed up can be done by changing our implementation to return list of key points instead of entire image during the mid step. 
+Through re-implementation of some of the popular computer vision library ourselves, we were able to see many clever ideas and insights into how researchers attempted to approach the correspondence problem. SIFT detector/descriptor in particular assemble several idea that are common in computer vision in one place and require multiple steps to produce the useful SIFT features. It first need to generate scale space, where each octave and level progressively hide away detail to represent image in bigger scale. It then use computed scale space to compute DoG, which is approximate LoG. From the edges and corners obtain from the DoG, it find the local maxima, potential key points. Set of key points are refined by removing key points with low contrast or edges. Key points that survived would then get the orientation assigned, where neighboring pixels surrounds the key points vote for its best representing orientation. Only after all this step, we have obtained what we called SIFT key points. Obtaining a SIFT feature required one more step, neighboring pixels were sub-divided into 16 regions, where each region compute 8x1 vector base on the similar voting technique used for orientation assignment, then combine all resulting vectors to form 128x1 descriptor representing a feature. Performance was bottle necked during the scale space generation step. We believe that such bottle neck cannot be avoided unless there is better alternative for applying Gaussian kernel. On the other hand, some speed up can be done by changing our implementation to return list of key points instead of entire image during the mid step. Additionally, the Nearest Neighbor matching algorithm implementation proved to be successful when used with the Manhattan distance function with little performance issues that could be reduced any further. To conclude, we were able to achieve our initial goals of implementing several key computer vision functions in order to gain a better understanding of their implementation and how they function.
 
 ---
 # References
 [1] David Lowe, "Distinctive Image Features from Scale-Invariant Keypoints", Computer Science Department, University of British Columbia, Vancouver, B.C, Canada, 2004.  
 [2] Utkarsh Sinha. "SIFT: Theory and Practice". AI Shack. https://aishack.in/tutorials/sift-scale-invariant-feature-transform-introduction/. (Accessed December 6, 2021).  
 [3] Simon Prince, *Computer vision: models, learning and inference*, Cambridge University Press, 2012.  
-
+[4] K. Mikolajczyk and C. Schmid, <em>A Performance Evaluation of Local Descriptors</em>, 2005.<br>
 ---
 #### © Aziz Shaik and Bug Lee
 
