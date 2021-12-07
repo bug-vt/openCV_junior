@@ -122,8 +122,10 @@ Lowe's paper also suggested to create new key points with orientations that were
 
 
 ## **9. Generating SIFT feature**
+Using the SIFT key points (which contain information about its location, scale, and orientation) generated from the previous step, now SIFT feature can be generated. 
 The following pseudo code was used for our implementation. It was adapted from the *Computer vision: models, learning and inference* by Simon Prince [3]. 
 
+    Compute which octave and level should be use from the scale space
     Compute gradient orientation and amplitude maps over a 16 X 16 pixel region around the interest point
     Divide 16 X 16 detector region into a regular grid of non-overlapping 4x4 cells
     Within each of these cells, compute an 8 dimensional histogram of the image orientations
@@ -137,7 +139,7 @@ The following pseudo code was used for our implementation. It was adapted from t
 
 
 ## **10. Qualitative results**
-Key points and features were generated using SIFT detector/descriptor for this testing. The following tests were made for its correctness.
+Key points and features were generated using SIFT detector/descriptor for this testing. The following tests were made for its correctness. Note that this was tested before nearest neighbor matching was implemented.
  1. Two images are differed by translation (Figure 12)
  2. Two images are differed by rotation (Figure 13)
  3. Two images are differed by scale (Figure 14)
@@ -185,7 +187,7 @@ As shown below, there are 3 major bottle neck present in our implementation: Gau
 ---
 ---
 # Conclusion
-Through re-implementation of some of the popular computer vision library ourselves, we were able to see many clever idea and insight and how people tried to approach the correspondence problem. SIFT detector/descriptor in particular assemble several idea that are common in computer vision in one place and require multiple steps to produce the useful SIFT features. It first need to generate scale space, where each octave and level progressively hide away detail to represent image in bigger scale. It then use computed scale space to compute DoG, which is approximate LoG. From the edges and corners obtain from the DoG, it find the local maxima, potential key points. Set of key points are refined by removing key points with low contrast or edges. Key points that survived would then get the orientation assigned, where neighboring pixels surrounds the key points vote for its best representing orientation. Only after all this step, we have obtained what we called SIFT key points. Obtaining a SIFT feature required one more step, neighboring pixels were sub-divided into 16 regions, where each region compute 8x1 vector base on the similar voting technique used for orientation assignment, then combine all resulting vectors to form 128x1 descriptor representing a feature. Performance was bottle necked during the scale space generation step. We believe that such bottle neck cannot be avoided unless there is better alternative for applying Gaussian kernel. On the other hand, some speed up can be done by changing our implementation to return list of key points instead of entire image during the mid step. 
+Through re-implementation of some of the popular computer vision library ourselves, we were able to see many clever idea, insight, and how people tried to approach the correspondence problem. SIFT detector/descriptor in particular assemble several idea that are common in computer vision in one place and require multiple steps to produce the useful SIFT features. It first need to generate scale space, where each octave and level progressively hide away detail to represent image in bigger scale. It then use computed scale space to compute DoG, which is approximate LoG. From the edges and corners obtain from the DoG, it find the local maxima, potential key points. Set of key points are refined by removing key points with low contrast or edges. Key points that survived would then get the orientation assigned, where neighboring pixels surrounds the key points vote for its best representing orientation. Only after all this step, we have obtained what we called SIFT key points. Obtaining a SIFT feature required one more step, neighboring pixels were sub-divided into 16 regions, where each region compute 8x1 vector base on the similar voting technique used for orientation assignment, then combine all resulting vectors to form 128x1 descriptor representing a feature. Performance was bottle necked during the scale space generation step. We believe that such bottle neck cannot be avoided unless there is better alternative for applying Gaussian kernel. On the other hand, some speed up can be done by changing our implementation to return list of key points instead of entire image during the mid step. 
 
 ---
 # References
