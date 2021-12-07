@@ -9,7 +9,7 @@
 
 ---
 # Abstract
-
+Problem related to correspondence have been around the computer vision for a while now and many clever approaches were developed in a last few decade to address such issue. Now due to the shift in interest in computer vision community, it is easy to overlook the bright idea behind the algorithm that what now people consider as 'old'. Goal of this project was to gain insight on few selected libraries/functions related to correspondence by re-implementing from ground up. SIFT detector/descriptor, and Nearest Neighbor matching was chosen as they have been proven to be robust and many have successfully used for real world application. SIFT detector/descriptor was implemented based on the David Lowe's paper, _Distinctive Image Features from Scale-Invariant Keypoints_, where it provide all the parameters that we have used during the implementation. Although the robustness and performance of our implementations are nowhere near the commercial version, we have successfully implemented working version of SIFT detector/descriptor and Nearest neighbor matching.
 
 
 ---
@@ -122,7 +122,7 @@ Lowe's paper also suggested to create new key points with orientations that were
 
 
 ## **9. Generating SIFT feature**
-The following pseudo code was used for our implementation. It was adapted from the *Computer vision: models, learning and inference* by Simon Prince [2]. 
+The following pseudo code was used for our implementation. It was adapted from the *Computer vision: models, learning and inference* by Simon Prince [3]. 
 
     Compute gradient orientation and amplitude maps over a 16 X 16 pixel region around the interest point
     Divide 16 X 16 detector region into a regular grid of non-overlapping 4x4 cells
@@ -144,7 +144,7 @@ Key points and features were generated using SIFT detector/descriptor for this t
  4. Two images are differed by different points of view (Figure 15)
 
 ![Key points](static/test_keypoints.png)
-#### Figure 11. Resulting key points from SIFT detector. Image with low number of key points were chosen for the purpose of this test. 
+#### Figure 11. Resulting key points from SIFT detector. Image with low number of key points were chosen for the purpose of this tests.
  
 ![Translation test](static/translation_test.png)
 #### Figure 12. Two images differ by translation.
@@ -173,6 +173,8 @@ As shown below, there are 3 major bottle neck present in our implementation: Gau
 | Orientation assignments | 0.24 s | 0.86 s | 3.47 s |
 | Generating SIFT features | 0.70 s | 1.99 s | 12.42 s |
 
+#### Figure 16. Performance results. Label on the top represent input image size. 
+
 
 ---
 # Nearest neighbor matching
@@ -187,8 +189,9 @@ Through re-implementation of some of the popular computer vision library ourselv
 
 ---
 # References
-[1] Simon Prince, *Computer vision: models, learning and inference*, Cambridge University Press, 2012.  
-[2] Richard Szeliski, *Computer Vision: Algorithms and Applications*, 2nd Edition, Springer, 2021.
+[1] David Lowe, "Distinctive Image Features from Scale-Invariant Keypoints", Computer Science Department, University of British Columbia, Vancouver, B.C, Canada, 2004.  
+[2] Utkarsh Sinha. "SIFT: Theory and Practice". AI Shack. https://aishack.in/tutorials/sift-scale-invariant-feature-transform-introduction/. (Accessed December 6, 2021).  
+[3] Simon Prince, *Computer vision: models, learning and inference*, Cambridge University Press, 2012.  
 
 ---
 #### © Aziz Shaik and Bug Lee
