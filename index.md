@@ -1,6 +1,6 @@
 <link rel="stylesheet" href="styles.css">
 
-# Project Title
+# Manual Implementation and Analysis of Selected Correspondence-Related Functions
 #### Aziz Shaik and Bug Lee
 #### Fall 2021 ECE 4554 Computer Vision: Course Project
 #### Virginia Tech  
@@ -33,7 +33,7 @@ As a student in the Computer Vision course, however, our goal is to gain a concr
     - *circle()*
     - *arrowedLine()*
     - *line()*
-- During the prototyping step, we will also analyze what part of the algorithm is causing the performance bottleneck. This will provide a better understanding of the strengths and weaknesses of the given algorithm in computer vision and suggest when and where to use it for best performance. 
+- During the prototyping step, we have performed empirical analysis on what part of the algorithm is causing the performance bottleneck. This have provide a better understanding of the strengths and weaknesses of the given algorithm in computer vision and suggest what part could have been improved. 
 - Some of the code from the homework assignments were reused with no or moderate modification. All source code are publicly available inside the GitHub.
   - *liner_filter()*
   - *gaussian()* and *gaussianKernel()*
@@ -131,11 +131,34 @@ The following pseudo code was used for our implementation. It was adapted from t
     Concatenate 16 histograms to make 128 X 1 vector
     Normalize the vector
 
-## **10. Results**
-
 ![SIFT detector result](static/sift_detector_result.png)
 ![SIFT descriptor result](static/sift_descriptor.png)
 #### Figure 10. Result of SIFT detector (top) and matching SIFT feature (bottom). 
+
+
+## **10. Qualitative results**
+Key points and features were generated using SIFT detector/descriptor for this testing. The following tests were made for its correctness.
+ 1. Two images are differed by translation (Figure 12)
+ 2. Two images are differed by rotation (Figure 13)
+ 3. Two images are differed by scale (Figure 14)
+ 4. Two images are differed by different points of view (Figure 15)
+
+![Key points](static/test_keypoints.png)
+#### Figure 11. Resulting key points from SIFT detector. Image with low number of key points were chosen for the purpose of this test. 
+ 
+![Translation test](static/translation_test.png)
+#### Figure 12. Two images differ by translation.
+
+![Rotation test](static/rotation_test.png)
+#### Figure 13. Two images differ by rotation.
+
+![Scale test](static/scale_test.png)
+#### Figure 14. Two images differ by scale.
+
+![Point of view test](static/perspective_test.png)
+#### Figure 15. Two images differ by point of view.
+
+
 
 ## **11. Performance**
 As shown below, there are 3 major bottle neck present in our implementation: Gaussian pyramid generation, scale space generation, and low contrast and edge removal process. Although time complexity of all functions, except sift descriptor, are quadratically grow as the input image size doubled, first two functions are affected more heavily as those involve applying Gaussian kernel to each pixel. Unless there is a alternative and more efficient way of applying kernel, performance of Gaussian pyramid and scale space generation always will be the limiting factor. On the other hand, low contrast and edge removal can be improve. For simplicity reason, we have implemented _locate_maxima()_ to return entire image instead of array of key points. However, since the number of potential key points that generated from the _locate_maxima()_ are generally much lower than the number of pixels in the image, latter implementation would have made our SIFT operation faster.
@@ -158,31 +181,12 @@ As shown below, there are 3 major bottle neck present in our implementation: Gau
 
 
 ---
-# Qualitative results
-## **1. Experiment set up**
-Key points and features were generated using SIFT detector/descriptor for this testing. The correctness of the descriptor was evaluated by the following 3 tests.
- 1. Descriptors with matching feature points where two images are differed by translation (Figure 4)
- 2. Descriptors with matching feature points where two images are differed by rotation (Figure 5)
- 3. Descriptors with matching feature points where two images are differed by different points of view (Figure 6)
- 
-
-#### Figure 4. Two images differ by translation.
-
-
-#### Figure 5. Two images differ by rotation.
-
-
-#### Figure 6. Two images differ by point of view.
-
-## **2. Results**
-
-
-
-
 ---
 # Conclusion
-
-
+Through re-implementation of some of the popular computer vision library ourselves, we were able to see many clever idea and insight and how people tried to approach the correspondence problem. SIFT detector/descriptor in particular assemble several idea that are common in computer vision in one place and require multiple steps to produce the useful SIFT features.  
+It first need to generate scale space, where each octave and level progressively hide away detail to represent image in bigger scale. It then use computed scale space to compute DoG, which is approximate LoG. From the edges and corners obtain from the DoG, it find the local maxima, potential key points. Set of key points are refined by removing key points with low contrast or edges. Key points that survived would then get the orientation assigned, where neighboring pixels surrounds the key points vote for its best representing orientation. Only after all this step, we have obtained what we called SIFT key points.  
+Obtaining a SIFT feature required one more step, neighboring pixels were sub-divided into 16 regions, where each region compute 8x1 vector base on the similar voting technique used for orientation assignment, then combine all resulting vectors to form 128x1 descriptor representing a feature.  
+Performance was bottle necked during the scale space generation step. We believe that such bottle neck cannot be avoided unless there is better alternative for applying Gaussian kernel. On the other hand, some speed up can be done by changing our implementation to return list of key points instead of entire image during the mid step. 
 
 ---
 # References
