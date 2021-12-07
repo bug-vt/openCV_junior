@@ -1,0 +1,5 @@
+website:
+https://bug-vt.github.io/openCV_junior/
+
+code:
+https://github.com/bug-vt/openCV_junior
