@@ -3,7 +3,8 @@
 # Implementation and Analysis of Correspondence Functions used in Computer Vision
 #### Aziz Shaik and Bug Lee
 #### Fall 2021 ECE 4554 Computer Vision: Course Project
-#### https://github.com/bug-vt/openCV_junior
+#### Website: https://bug-vt.github.io/openCV_junior/
+#### Code: https://github.com/bug-vt/openCV_junior
 #### Virginia Tech  
 
 ![sift_detector](static/sift_detector_result.png)
